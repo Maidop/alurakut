@@ -14,9 +14,9 @@ function ProfileSideBar(propriedades) {
 export default function Home() {
   const githubUser = 'maidop';
   const pessoasFavoritas = [
-    'juunegreiros', 
-    'omariosouto', 
-    'peas',
+    'gasparbarancelli', 
+    'lucini', 
+    'kujikeo',
     'rafaballerini',
     'marcobrunodev',
     'felipefialho'
