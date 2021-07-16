@@ -9,22 +9,23 @@ import {
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
 
 function ProfileRelationsBox(propriedades) {
+  const seguidores = propriedades.items.slice(0, 6);
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle">
         {propriedades.title} ({propriedades.items.length})
       </h2>
       <ul>
-        {/* {seguidores.map((itemAtual) => {
+        {seguidores.map((itemAtual) => {
           return (
-            <li key={itemAtual}>
-              <a href={`https://github.com/${itemAtual}.png`}>
-                <img src={itemAtual.image} />
-                <span>{itemAtual.title}</span>
+            <li key={itemAtual.id}>
+              <a href={`/users/${itemAtual.id}`}>
+                <img src={itemAtual.avatar_url} />
+                <span>{itemAtual.login}</span>
               </a>
             </li>
-          )
-        })} */}
+          );
+        })}
       </ul>
     </ProfileRelationsBoxWrapper>
   );
@@ -87,13 +88,13 @@ export default function Home() {
       },
       body: JSON.stringify({
         query: `query {
-        allCommunities {
-          id 
-          title
-          imageUrl
-          creatorSlug
-        }
-      }`,
+          allCommunities {
+            id
+            title
+            imageUrl
+            creatorslug
+          }
+        }`,
       }),
     })
       .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
@@ -137,7 +138,7 @@ export default function Home() {
                 const comunidade = {
                   title: dadosDoForm.get('title'),
                   imageUrl: dadosDoForm.get('image'),
-                  creatorSlug: usuarioAleatorio,
+                  creatorslug: githubUser,
                 };
                 fetch('/api/comunidades', {
                   method: 'POST',
