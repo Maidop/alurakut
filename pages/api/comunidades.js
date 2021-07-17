@@ -14,8 +14,6 @@ export default async function recebedorDeRequests(request, response) {
       // creatorSlug: "maidop"
     });
 
-    console.log(registroCriado);
-
     response.json({
       dados: 'Algum dado qualquer',
       registroCriado: registroCriado,

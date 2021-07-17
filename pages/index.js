@@ -1,4 +1,6 @@
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken';
 import MainGrid from '../src/components/MainGrid';
 import Box from '../src/components/Box';
 import {
@@ -54,8 +56,8 @@ function ProfileSideBar(propriedades) {
   );
 }
 
-export default function Home() {
-  const githubUser = 'maidop';
+export default function Home(props) {
+  const githubUser = props.githubUser;
   const [comunidades, setComunidades] = React.useState([]);
   const pessoasFavoritas = [
     'gasparbarancelli',
@@ -100,15 +102,12 @@ export default function Home() {
       .then((response) => response.json()) // Pega o retorno do response.json() e já retorna
       .then((respostaCompleta) => {
         const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
-        console.log(comunidadesVindasDoDato);
         setComunidades(comunidadesVindasDoDato);
       });
     // .then(function (response) {
     //   return response.json()
     // })
   }, []);
-
-  console.log('seguidores antes do return', seguidores);
 
   // 1 - Criar um box que vai ter um map, baseado nos items do array
   // que pegamos do GitHub
@@ -132,9 +131,6 @@ export default function Home() {
                 e.preventDefault();
                 const dadosDoForm = new FormData(e.target);
 
-                console.log('Campo: ', dadosDoForm.get('title'));
-                console.log('Campo: ', dadosDoForm.get('image'));
-
                 const comunidade = {
                   title: dadosDoForm.get('title'),
                   imageUrl: dadosDoForm.get('image'),
@@ -148,7 +144,6 @@ export default function Home() {
                   body: JSON.stringify(comunidade),
                 }).then(async (response) => {
                   const dados = await response.json();
-                  console.log(dados.registroCriado);
                   const comunidade = dados.registroCriado;
                   const comunidadesAtualizadas = [...comunidades, comunidade];
                   setComunidades(comunidadesAtualizadas);
@@ -215,4 +210,26 @@ export default function Home() {
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  const token = cookies.USER_TOKEN;
+  const decodedToken = jwt.decode(token);
+  const githubUser = decodedToken?.githubUser;
+
+  if (!githubUser) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      githubUser,
+    },
+  };
 }
